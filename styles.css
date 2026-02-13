@@ -8,11 +8,12 @@
 */
 
 :root {
+  --header-h: clamp(92px, 9.5vw, 132px);
+  --logo-h: clamp(66px, 7.8vw, 112px);
+  --footer-logo-h: clamp(64px, 7vw, 108px);
+
   --ff-display: 'DM Serif Display', Georgia, serif;
   --ff-body: 'Outfit', sans-serif;
-
-  /* Header sizing (keeps the brand mark prominent on all screens) */
-  --header-h: clamp(86px, 9vw, 120px);
 
   /* Replace these with your real colors */
   --p-bg: #0b0f17;
@@ -68,24 +69,36 @@ button:hover { opacity: 0.92; }
 
 
 .site-logo {
-  /* Brand-dominant sizing: always clearly visible */
-  height: clamp(64px, 7.5vw, 98px);
+  height: var(--logo-h);
   width: auto;
-  border-radius: 50%;
   object-fit: contain;
-
-  /* Helps a transparent logo pop on the dark header */
-  background: rgba(255, 255, 255, 0.08);
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  /* keep the transparent logo as-is (no ring, no crop) */
+  border-radius: 0;
+  background: transparent;
 }
 
 .footer-logo {
-  height: clamp(64px, 6.5vw, 96px);
+  height: var(--footer-logo-h);
   width: auto;
   object-fit: contain;
-  margin-bottom: 10px;
+}
+
+@media (max-width: 1024px) {
+  .site-logo {
+    height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-logo {
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-logo {
+    height: 64px;
+  }
 }
 
 
