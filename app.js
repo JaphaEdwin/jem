@@ -1,7 +1,20 @@
-/* Merged site bundle (Main + Admin) - GitHub Pages friendly */
-const { useCallback, useEffect, useRef, useState } = React;
+/* ============================================================
+   Align Tech / JEM — Combined Website + Admin Panel
+   GitHub Pages ready (no build step)
+   - Uses React 18 + Babel Standalone in the browser
+   - Shared CMS config is stored in localStorage under:
+       "jem-cms-config"
+   ============================================================ */
 
-/* ===== Main site component ===== */
+const {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useLayoutEffect,
+} = React;
+
 
 /* ══════════════════════════════════════════════════════════════
    JINJA EXPLORER MARATHON — Full Website v2
@@ -209,15 +222,9 @@ function Header({ currentPage, onNavigate }) {
       backdropFilter: "blur(12px)", borderBottom: scrolled ? "1px solid rgba(200,150,62,0.15)" : "1px solid transparent",
       transition: "all 0.3s",
     }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "var(--header-h)" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
         <button onClick={() => onNavigate("/")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, padding: 0 }}>
-         <img 
-  src={LOGO_SRC} 
-  alt="Jinja Explorer Marathon Logo"
-  className="site-logo"
-/>
-
-
+          <img src={LOGO_SRC} alt="Jinja Explorer Marathon" style={{ height: 42, width: "auto", objectFit: "contain" }} />
           <span className="jem-header-name" style={{ fontFamily: "var(--ff-body)", fontSize: 11, color: "rgba(255,255,255,0.45)", letterSpacing: 2.5, textTransform: "uppercase" }}>Jinja Explorer Marathon</span>
         </button>
         <nav style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -267,7 +274,7 @@ function Footer({ onNavigate }) {
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div className="jem-footer-grid">
           <div>
-            <img src={LOGO_SRC} alt="Jinja Explorer Marathon" className="footer-logo" />
+            <img src={LOGO_SRC} alt="Jinja Explorer Marathon" style={{ height: 52, width: "auto", objectFit: "contain", marginBottom: 8 }} />
             <p style={{ fontSize: 14, lineHeight: 1.7, opacity: 0.55, maxWidth: 260 }}>{SITE.tagline}</p>
           </div>
           <div>
@@ -894,7 +901,7 @@ function ContactPage() {
 }
 
 /* ═══ MAIN APP ═══ */
-function AppMain() {
+function SiteApp() {
   const [page, setPage] = useState("/");
   const [cmsReady, setCmsReady] = useState(false);
   const [configVersion, setConfigVersion] = useState(0);
@@ -923,7 +930,7 @@ function AppMain() {
       <div style={{ textAlign: "center" }}>
         <div style={{ width: 36, height: 36, borderRadius: "50%", border: `3px solid ${P.border}`, borderTopColor: P.accent, animation: "spin 0.8s linear infinite", margin: "0 auto 14px" }} />
         <p style={{ color: P.textLight, fontSize: 14 }}>Loading...</p>
-        
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>
   );
@@ -976,9 +983,48 @@ function AppMain() {
       {page === "/" && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: eventSchema }} />}
       <div style={{ display: "none" }} data-og-title={seo.title} data-og-description={seo.desc} data-og-type="website" data-og-image="https://jinjaexplorermarathon.com/og-image.jpg" data-og-url={`https://jinjaexplorermarathon.com${page}`} aria-hidden="true" />
 
-      
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        :root { --ff-display: 'DM Serif Display', Georgia, serif; --ff-body: 'Outfit', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--ff-body); background: ${P.bg}; color: ${P.text}; -webkit-font-smoothing: antialiased; }
+        ::selection { background: ${P.accent}33; }
+        input:focus, textarea:focus, select:focus { border-color: ${P.accent} !important; box-shadow: 0 0 0 3px ${P.accent}18 !important; }
+        button { font-family: var(--ff-body); }
+        button:hover { opacity: 0.92; }
+        .jem-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .jem-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .jem-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .jem-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+        .jem-footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+        .jem-footer-heading { font-weight: 700; margin-bottom: 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: ${P.accent}; }
+        .jem-desktop-nav { display: flex; gap: 2px; align-items: center; }
+        .jem-mobile-toggle { display: none; }
+        .jem-mobile-register { display: none; }
+        @media (max-width: 1024px) {
+          .jem-grid-5 { grid-template-columns: repeat(3, 1fr); }
+          .jem-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+          .jem-grid-2, .jem-grid-3 { grid-template-columns: 1fr; }
+          .jem-grid-4 { grid-template-columns: repeat(2, 1fr); }
+          .jem-grid-5 { grid-template-columns: repeat(2, 1fr); }
+          .jem-footer-grid { grid-template-columns: 1fr; }
+          .jem-desktop-nav { display: none !important; }
+          .jem-mobile-toggle { display: block !important; }
+          .jem-header-name { display: none !important; }
+          .jem-mobile-register { display: flex !important; }
+        }
+        @media (max-width: 480px) {
+          .jem-grid-4, .jem-grid-5 { grid-template-columns: 1fr; }
+        }
+        @media (min-width: 769px) {
+          .jem-mobile-toggle { display: none !important; }
+          .jem-mobile-register { display: none !important; }
+        }
+      `}</style>
 
-      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <div key={configVersion} style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <Header currentPage={page} onNavigate={nav} />
         <main style={{ flex: 1 }}>{render()}</main>
         {page !== "/register" && (
@@ -999,21 +1045,22 @@ function AppMain() {
   );
 }
 
-/* ===== Admin panel component ===== */
 
-/* ══════════════════════════════════════════════════════════════════
-   JEM ADMIN PANEL — Content Management for Jinja Explorer Marathon
-   Persistent storage · Inline editing · JSON export · Navy brand UI
-   ══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════
+   JEM ADMIN PANEL v4 — Complete Rebuild
+   Deep-clone state · Verified storage · Navy brand UI
+   Storage key shared with website: "jem-cms-config"
+   ═══════════════════════════════════════════════════════════ */
 
 const STORAGE_KEY = "jem-cms-config";
 
-/* ─── DEFAULT DATA (mirrors the live site config exactly) ─── */
+/* ─── DEFAULTS ─── */
 const DEFAULTS = {
   site: {
     name: "Jinja Explorer Marathon",
     tagline: "Run the Royal Gateway. Explore the Adventure City.",
-    story: "A destination marathon hosted in Jinja—gateway of Busoga and Uganda's adventure city—combining world-class race operations with tourism and culture.",
+    story: "A destination marathon hosted in Jinja\u2014gateway of Busoga and Uganda\u2019s adventure city\u2014combining world-class race operations with tourism and culture.",
     date: "November 2026",
     dateShort: "Nov 2026",
     location: "Jinja City, Uganda",
@@ -1034,19 +1081,19 @@ const DEFAULTS = {
     { event: "5K Fun Run", time: "08:00 AM", assembly: "07:30 AM" },
   ],
   pillars: [
-    { icon: "◈", title: "Belonging", desc: "A race for every runner—from first-timers to elites. Twegaite: Come Together.", color: "#C8963E" },
-    { icon: "◆", title: "Pride", desc: "Celebrating Busoga heritage, the Kyabazinga's legacy, and Uganda's running culture.", color: "#C45B28" },
-    { icon: "▣", title: "Legacy", desc: "Building a world-class annual race that drives lasting value for Jinja and Busoga.", color: "#1C2D4F" },
-    { icon: "◎", title: "Adventure", desc: "Jinja is Uganda's adventure capital—rafting, bungee, wildlife, and the mighty Nile.", color: "#2E86AB" },
-    { icon: "✦", title: "Stewardship", desc: "Eco-conscious operations, community reinvestment, and responsible tourism.", color: "#4A7C59" },
+    { icon: "\u25C8", title: "Belonging", desc: "A race for every runner\u2014from first-timers to elites. Twegaite: Come Together.", color: "#C8963E" },
+    { icon: "\u25C6", title: "Pride", desc: "Celebrating Busoga heritage, the Kyabazinga\u2019s legacy, and Uganda\u2019s running culture.", color: "#C45B28" },
+    { icon: "\u25A3", title: "Legacy", desc: "Building a world-class annual race that drives lasting value for Jinja and Busoga.", color: "#1C2D4F" },
+    { icon: "\u25CE", title: "Adventure", desc: "Jinja is Uganda\u2019s adventure capital\u2014rafting, bungee, wildlife, and the mighty Nile.", color: "#2E86AB" },
+    { icon: "\u2726", title: "Stewardship", desc: "Eco-conscious operations, community reinvestment, and responsible tourism.", color: "#4A7C59" },
   ],
   instruments: [
-    { id: "embaire", name: "Embaire", tag: "Protocol", desc: "The royal xylophone of Busoga — a signature cultural motif and ceremonial centrepiece with wooden keys over banana-stem resonators.", best: "Opening ceremony, start line fanfare", emoji: "🎶" },
-    { id: "bigwala", name: "Bigwala", tag: "Protocol", desc: "Sacred gourd trumpets traditionally played during royal coronations and state processions of the Kyabazinga.", best: "Royal protocols, VIP arrivals", emoji: "📯" },
-    { id: "drums", name: "Engalabi Drums", tag: "Hype", desc: "Powerful long drums with lizard-skin heads that drive energy, rhythm and unity at celebrations and gatherings.", best: "Km gate hype zones, finish line energy", emoji: "🥁" },
-    { id: "shakers", name: "Ensaasi Shakers", tag: "Hype", desc: "Gourd shakers filled with seeds, adding rhythmic texture and enabling crowd participation in communal music.", best: "Crowd zones, cheer points", emoji: "🎵" },
-    { id: "flute", name: "Endere Flute", tag: "Chill", desc: "A soft bamboo flute producing meditative, breathy melodies deeply tied to Busoga storytelling traditions.", best: "Cool-down zones, post-race relaxation", emoji: "🎼" },
-    { id: "lyre", name: "Endongo Lyre", tag: "Story", desc: "A stringed bowl lyre used by griots, storytellers and poets to accompany oral histories and evening gatherings.", best: "Cultural expo, storytelling sessions", emoji: "🎻" },
+    { id: "embaire", name: "Embaire", tag: "Protocol", desc: "The royal xylophone of Busoga \u2014 a signature cultural motif.", best: "Opening ceremony, start line fanfare", emoji: "\uD83C\uDFB6" },
+    { id: "bigwala", name: "Bigwala", tag: "Protocol", desc: "Sacred gourd trumpets for royal coronations.", best: "Royal protocols, VIP arrivals", emoji: "\uD83D\uDCEF" },
+    { id: "drums", name: "Engalabi Drums", tag: "Hype", desc: "Powerful long drums driving energy and unity.", best: "Km gate hype zones, finish line energy", emoji: "\uD83E\uDD41" },
+    { id: "shakers", name: "Ensaasi Shakers", tag: "Hype", desc: "Gourd shakers for crowd participation.", best: "Crowd zones, cheer points", emoji: "\uD83C\uDFB5" },
+    { id: "flute", name: "Endere Flute", tag: "Chill", desc: "Soft bamboo flute for storytelling.", best: "Cool-down zones, post-race relaxation", emoji: "\uD83C\uDFBC" },
+    { id: "lyre", name: "Endongo Lyre", tag: "Story", desc: "Stringed bowl lyre for oral histories.", best: "Cultural expo, storytelling sessions", emoji: "\uD83C\uDFBB" },
   ],
   sponsorTiers: [
     { tier: "Title Partner", price: "Custom", perks: ["Full naming rights", "Start/finish branding", "All media & digital", "VIP hospitality (20 pax)", "Expo headline booth", "Bib & medal logo"] },
@@ -1055,683 +1102,592 @@ const DEFAULTS = {
     { tier: "Community Partner", price: "In-kind / $1,000+", perks: ["Logo on website", "Social media mentions", "Tourism village presence", "Event passes (2 pax)"] },
   ],
   itineraries: [
-    { title: "Runner Weekend", emoji: "🏃", color: "#C8963E", highlights: ["Expo & bib collection Friday", "Race day Saturday — chase your PB", "Recovery brunch & Nile cruise Sunday"] },
-    { title: "Family Weekend", emoji: "👨‍👩‍👧‍👦", color: "#4A7C59", highlights: ["Kids' fun run Saturday morning", "Cultural showcase & Busoga food market", "Source of the Nile boat trip Sunday"] },
-    { title: "Adventure Weekend", emoji: "🌊", color: "#2E86AB", highlights: ["White-water rafting Friday", "Race day Saturday — run the Nile route", "Bungee jumping & quad biking Sunday"] },
+    { title: "Runner Weekend", emoji: "\uD83C\uDFC3", color: "#C8963E", highlights: ["Expo & bib collection Friday", "Race day Saturday", "Recovery brunch & Nile cruise Sunday"] },
+    { title: "Family Weekend", emoji: "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66", color: "#4A7C59", highlights: ["Kids fun run Saturday morning", "Cultural showcase & Busoga food market", "Source of the Nile boat trip Sunday"] },
+    { title: "Adventure Weekend", emoji: "\uD83C\uDF0A", color: "#2E86AB", highlights: ["White-water rafting Friday", "Race day Saturday", "Bungee jumping & quad biking Sunday"] },
   ],
   faqs: [
-    { q: "When and where is the race?", a: "The Jinja Explorer Marathon takes place in November 2026 in Jinja City, Uganda — the adventure capital at the source of the Nile." },
-    { q: "What distances are available?", a: "We offer 5K Fun Run, 10K, Half Marathon (21K), and Full Marathon (42K) categories for all abilities." },
-    { q: "How do I register?", a: "Click the Register button to access our form. Payment is via Mobile Money (MTN/Airtel), bank transfer, or international card." },
-    { q: "Can I get a refund or transfer my entry?", a: "Entries are non-refundable but transferable to another runner up to 14 days before race day. A small transfer fee applies." },
-    { q: "Is there a minimum age requirement?", a: "5K: 10+, 10K: 14+, 21K: 16+, 42K: 18+. Runners under 18 need guardian consent at registration." },
-    { q: "What is included in my entry fee?", a: "Race bib with timing chip, finisher medal, official race t-shirt, hydration on course, medical support, post-race refreshments, and digital certificate." },
+    { q: "When and where is the race?", a: "The Jinja Explorer Marathon takes place in November 2026 in Jinja City, Uganda." },
+    { q: "What distances are available?", a: "We offer 5K Fun Run, 10K, Half Marathon (21K), and Full Marathon (42K)." },
+    { q: "How do I register?", a: "Click the Register button. Payment via Mobile Money, bank transfer, or card." },
+    { q: "Can I get a refund?", a: "Entries are non-refundable but transferable up to 14 days before race day." },
+    { q: "Minimum age?", a: "5K: 10+, 10K: 14+, 21K: 16+, 42K: 18+. Under 18 need guardian consent." },
+    { q: "What is included?", a: "Bib, finisher medal, t-shirt, hydration, medical support, refreshments, digital certificate." },
   ],
   courseMarkers: [
-    { km: "KM 0", name: "Start — Main Street, Jinja", desc: "The race launches in the heart of Jinja City with a ceremonial Embaire fanfare and Bigwala trumpets." },
-    { km: "KM 8", name: "Nile Bridge Crossing", desc: "Runners cross the iconic Nile bridge with panoramic views of Bujagali Falls and the river below." },
-    { km: "KM 15", name: "Busoga Cultural Gate", desc: "A Bigwala trumpet zone marks the heritage stretch — Engalabi drums drive the pace forward." },
-    { km: "KM 21", name: "Half Marathon Finish", desc: "Half marathon runners finish at the lakeside promenade with medal ceremony and refreshments." },
-    { km: "KM 30", name: "Adventure Corridor", desc: "The route passes rafting launch points and riverside trails — cheering zones line the path." },
-    { km: "KM 42", name: "Finish — Jinja Sports Ground", desc: "A roaring finish with drums, medals, photo wall, and the full celebration of Twegaite." },
+    { km: "KM 0", name: "Start \u2014 Main Street", desc: "Race launches in the heart of Jinja City." },
+    { km: "KM 8", name: "Nile Bridge Crossing", desc: "Panoramic views of Bujagali Falls." },
+    { km: "KM 15", name: "Busoga Cultural Gate", desc: "Heritage stretch with drums." },
+    { km: "KM 21", name: "Half Marathon Finish", desc: "Lakeside promenade." },
+    { km: "KM 30", name: "Adventure Corridor", desc: "Rafting launch points." },
+    { km: "KM 42", name: "Finish \u2014 Sports Ground", desc: "Full celebration of Twegaite." },
   ],
   aidStations: [
-    { name: "Station 1", location: "KM 5", water: "✓", electrolytes: "—", medical: "First Aid" },
-    { name: "Station 2", location: "KM 10", water: "✓", electrolytes: "✓", medical: "First Aid" },
-    { name: "Station 3", location: "KM 15", water: "✓", electrolytes: "✓", medical: "Paramedic" },
-    { name: "Station 4", location: "KM 20", water: "✓", electrolytes: "✓", medical: "First Aid" },
-    { name: "Station 5", location: "KM 25", water: "✓", electrolytes: "✓", medical: "Paramedic" },
-    { name: "Station 6", location: "KM 30", water: "✓", electrolytes: "✓", medical: "First Aid" },
-    { name: "Station 7", location: "KM 35", water: "✓", electrolytes: "✓", medical: "Paramedic" },
-    { name: "Station 8", location: "KM 40", water: "✓", electrolytes: "✓", medical: "First Aid" },
+    { name: "Station 1", location: "KM 5", water: "\u2713", electrolytes: "\u2014", medical: "First Aid" },
+    { name: "Station 2", location: "KM 10", water: "\u2713", electrolytes: "\u2713", medical: "First Aid" },
+    { name: "Station 3", location: "KM 15", water: "\u2713", electrolytes: "\u2713", medical: "Paramedic" },
+    { name: "Station 4", location: "KM 20", water: "\u2713", electrolytes: "\u2713", medical: "First Aid" },
+    { name: "Station 5", location: "KM 25", water: "\u2713", electrolytes: "\u2713", medical: "Paramedic" },
+    { name: "Station 6", location: "KM 30", water: "\u2713", electrolytes: "\u2713", medical: "First Aid" },
+    { name: "Station 7", location: "KM 35", water: "\u2713", electrolytes: "\u2713", medical: "Paramedic" },
+    { name: "Station 8", location: "KM 40", water: "\u2713", electrolytes: "\u2713", medical: "First Aid" },
   ],
   raceWeekSchedule: [
-    { day: "Thursday", events: ["Expo opens 9 AM – 6 PM", "Bib collection begins", "Welcome talk — Race Director", "Tourism Village opens"] },
-    { day: "Friday", events: ["Expo continues 9 AM – 6 PM", "Shakeout run 7 AM (Nile promenade)", "Cultural showcase & Soundboard preview", "Pasta party 6 PM (Sports Ground)"] },
-    { day: "Saturday — Race Day", events: ["Assembly from 5:15 AM", "42K gun: 6:00 AM", "21K gun: 6:30 AM", "10K gun: 7:00 AM", "5K gun: 8:00 AM", "Awards ceremony 12:00 PM"] },
-    { day: "Sunday", events: ["Recovery yoga 7 AM", "Nile cruise (optional, bookable)", "Adventure activities", "Farewell brunch 11 AM"] },
+    { day: "Thursday", events: ["Expo opens 9 AM \u2013 6 PM", "Bib collection begins", "Welcome talk", "Tourism Village opens"] },
+    { day: "Friday", events: ["Expo 9 AM \u2013 6 PM", "Shakeout run 7 AM", "Cultural showcase", "Pasta party 6 PM"] },
+    { day: "Saturday \u2014 Race Day", events: ["Assembly 5:15 AM", "42K gun: 6:00 AM", "21K gun: 6:30 AM", "10K gun: 7:00 AM", "5K gun: 8:00 AM", "Awards 12:00 PM"] },
+    { day: "Sunday", events: ["Recovery yoga 7 AM", "Nile cruise", "Adventure activities", "Farewell brunch 11 AM"] },
   ],
   seo: {
-    "/": { title: "Jinja Explorer Marathon — Run the Royal Gateway", desc: "A destination marathon in Jinja, Uganda. 5K, 10K, Half & Full Marathon. Explore Busoga culture, Nile adventures & world-class race operations." },
-    "/about": { title: "About — Jinja Explorer Marathon", desc: "Discover the story behind East Africa's most distinctive destination marathon." },
-    "/register": { title: "Register — Jinja Explorer Marathon", desc: "Entry fees, start times, and registration. 5K from UGX 30,000." },
-    "/course": { title: "Course & Route — Jinja Explorer Marathon", desc: "Explore the certified race course through Jinja City." },
-    "/race-week": { title: "Race Week & Expo — Jinja Explorer Marathon", desc: "Expo details, bib collection, race week schedule." },
-    "/explore-jinja": { title: "Explore Jinja — Tourism & Itineraries", desc: "Plan your Explorer Weekend in Uganda's adventure capital." },
-    "/culture": { title: "Busoga Culture Soundboard — Jinja Explorer Marathon", desc: "Experience the instruments and sounds of Busoga." },
-    "/results": { title: "Results & Winners — Jinja Explorer Marathon", desc: "Race results, winner tables, and photo highlights." },
-    "/sponsors": { title: "Sponsor — Jinja Explorer Marathon", desc: "Partnership packages for East Africa's premier destination marathon." },
-    "/media": { title: "Media Centre — Jinja Explorer Marathon", desc: "Press kit, press releases, and media resources." },
-    "/contact": { title: "Contact — Jinja Explorer Marathon", desc: "Get in touch with the JEM team." },
+    "/": { title: "Jinja Explorer Marathon \u2014 Run the Royal Gateway", desc: "A destination marathon in Jinja, Uganda." },
+    "/about": { title: "About \u2014 Jinja Explorer Marathon", desc: "Story behind the marathon." },
+    "/register": { title: "Register \u2014 Jinja Explorer Marathon", desc: "Entry fees and registration." },
+    "/course": { title: "Course \u2014 Jinja Explorer Marathon", desc: "Race course through Jinja City." },
+    "/race-week": { title: "Race Week \u2014 Jinja Explorer Marathon", desc: "Expo and race week schedule." },
+    "/explore-jinja": { title: "Explore Jinja \u2014 Tourism", desc: "Plan your Explorer Weekend." },
+    "/culture": { title: "Culture \u2014 Busoga Soundboard", desc: "Instruments and sounds of Busoga." },
+    "/results": { title: "Results \u2014 Jinja Explorer Marathon", desc: "Race results and winners." },
+    "/sponsors": { title: "Sponsor \u2014 Jinja Explorer Marathon", desc: "Partnership packages." },
+    "/media": { title: "Media \u2014 Jinja Explorer Marathon", desc: "Press kit and resources." },
+    "/contact": { title: "Contact \u2014 Jinja Explorer Marathon", desc: "Get in touch." },
   },
 };
 
-/* ─── PALETTE ─── */
-const C = {
-  bgDark: "#0D1520", sidebar: "#111C2B", sidebarHover: "#182740",
-  primary: "#1C2D4F", primaryLight: "#2A4A7F",
-  accent: "#C8963E", accentHover: "#B5842F", accentMuted: "#C8963E22",
-  text: "#E8E4DC", textDim: "#8B9BB5", textDark: "#1A1A1A",
-  white: "#FFFFFF", bg: "#F7F4EF", cream: "#FAF7F2",
-  border: "#1E2E44", borderLight: "#E2DDD5",
-  success: "#34A853", danger: "#EA4335", warn: "#FBBC04",
-  card: "#FFFFFF", cardBorder: "#E5E1DA",
-};
-
-/* ─── NAV SECTIONS ─── */
-const SECTIONS = [
-  { id: "site", label: "Site Info", icon: "⚙", desc: "Name, tagline, date, contact" },
-  { id: "fees", label: "Race Fees", icon: "💰", desc: "Entry fees by category" },
-  { id: "startTimes", label: "Start Times", icon: "⏱", desc: "Gun times & assembly" },
-  { id: "pillars", label: "Pillars", icon: "◆", desc: "Brand values & pillars" },
-  { id: "instruments", label: "Instruments", icon: "🎵", desc: "Busoga Soundboard" },
-  { id: "sponsorTiers", label: "Sponsor Tiers", icon: "🤝", desc: "Partnership packages" },
-  { id: "itineraries", label: "Itineraries", icon: "🗺", desc: "Tourism itineraries" },
-  { id: "faqs", label: "FAQs", icon: "❓", desc: "Frequently asked questions" },
-  { id: "courseMarkers", label: "Course Markers", icon: "📍", desc: "Route landmarks" },
-  { id: "aidStations", label: "Aid Stations", icon: "🏥", desc: "Medical & hydration" },
-  { id: "raceWeekSchedule", label: "Race Week", icon: "📅", desc: "Schedule & events" },
-  { id: "seo", label: "SEO Meta", icon: "🔍", desc: "Page titles & descriptions" },
+/* ─── NAV ─── */
+var SECTIONS = [
+  { id: "site", label: "Site Info", icon: "\u2699\uFE0F" },
+  { id: "fees", label: "Race Fees", icon: "\uD83D\uDCB0" },
+  { id: "startTimes", label: "Start Times", icon: "\u23F1\uFE0F" },
+  { id: "pillars", label: "Pillars", icon: "\u25C6" },
+  { id: "instruments", label: "Instruments", icon: "\uD83C\uDFB5" },
+  { id: "sponsorTiers", label: "Sponsor Tiers", icon: "\uD83E\uDD1D" },
+  { id: "itineraries", label: "Itineraries", icon: "\uD83D\uDDFA\uFE0F" },
+  { id: "faqs", label: "FAQs", icon: "\u2753" },
+  { id: "courseMarkers", label: "Course Markers", icon: "\uD83D\uDCCD" },
+  { id: "aidStations", label: "Aid Stations", icon: "\uD83C\uDFE5" },
+  { id: "raceWeekSchedule", label: "Race Week", icon: "\uD83D\uDCC5" },
+  { id: "seo", label: "SEO Meta", icon: "\uD83D\uDD0D" },
 ];
 
-/* ═══════════════════════════════════════
-   STORAGE HELPERS
-   ═══════════════════════════════════════ */
-async function loadConfig() {
-  try {
-    const result = await window.storage.get(STORAGE_KEY);
-    return result ? JSON.parse(result.value) : null;
-  } catch {
-    return null;
-  }
-}
-async function saveConfig(data) {
-  try {
-    await window.storage.set(STORAGE_KEY, JSON.stringify(data));
-    return true;
-  } catch {
-    return false;
-  }
-}
+/* ─── COLORS ─── */
+var gold = "#C8963E";
+var navy = "#1C2D4F";
+var sidebarBg = "#111C2B";
+var pageBg = "#F7F4EF";
+var cardBg = "#FFFFFF";
+var bdr = "#E5E1DA";
+var txt = "#1A1A1A";
+var dim = "#6B7280";
 
-/* ═══════════════════════════════════════
-   SHARED UI COMPONENTS
-   ═══════════════════════════════════════ */
-function Input({ label, value, onChange, type = "text", placeholder, mono, rows }) {
-  const isArea = type === "textarea" || rows;
-  const base = {
-    width: "100%", padding: isArea ? "10px 14px" : "9px 14px",
-    borderRadius: 8, border: `1px solid ${C.cardBorder}`,
-    fontSize: 14, fontFamily: mono ? "monospace" : "'Outfit', sans-serif",
-    color: C.textDark, background: C.white, outline: "none",
-    boxSizing: "border-box", transition: "border-color 0.2s",
-    resize: isArea ? "vertical" : "none",
-  };
-  return (
-    <div style={{ marginBottom: 14 }}>
-      {label && <label style={{ display: "block", marginBottom: 5, fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8 }}>{label}</label>}
-      {isArea ? (
-        <textarea rows={rows || 3} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={base} />
-      ) : type === "color" ? (
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <input type="color" value={value} onChange={e => onChange(e.target.value)} style={{ width: 40, height: 36, border: "none", borderRadius: 6, cursor: "pointer", padding: 0 }} />
-          <input type="text" value={value} onChange={e => onChange(e.target.value)} style={{ ...base, flex: 1, fontFamily: "monospace" }} />
+/* Deep clone */
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+/* ════════════════════════════════════════
+   MAIN COMPONENT
+   ════════════════════════════════════════ */
+function JemAdmin() {
+  var [config, setConfig] = useState(null);
+  var [tab, setTab] = useState("site");
+  var [loading, setLoading] = useState(true);
+  var [dirty, setDirty] = useState(false);
+  var [saving, setSaving] = useState(false);
+  var [toast, setToast] = useState(null);
+  var [sideOpen, setSideOpen] = useState(false);
+  var [openRows, setOpenRows] = useState({});
+  var [showReset, setShowReset] = useState(false);
+  var [storageOk, setStorageOk] = useState("...");
+
+  /* Load */
+  useEffect(function () {
+    var alive = true;
+    (async function () {
+      var data = null;
+      try {
+        var r = await window.storage.get(STORAGE_KEY);
+        if (r && r.value) { data = JSON.parse(r.value); if (alive) setStorageOk("loaded"); }
+        else { if (alive) setStorageOk("empty"); }
+      } catch (e) { if (alive) setStorageOk("new"); }
+      if (alive) { setConfig(data || clone(DEFAULTS)); setLoading(false); }
+    })();
+    return function () { alive = false; };
+  }, []);
+
+  /* Toast dismiss */
+  useEffect(function () {
+    if (!toast) return;
+    var t = setTimeout(function () { setToast(null); }, 3500);
+    return function () { clearTimeout(t); };
+  }, [toast]);
+
+  /* ═══ CONFIG UPDATERS (always clone) ═══ */
+
+  function updateSection(key, fn) {
+    setConfig(function (prev) {
+      var next = clone(prev);
+      next[key] = typeof fn === "function" ? fn(clone(prev[key])) : clone(fn);
+      return next;
+    });
+    setDirty(true);
+  }
+
+  function setSiteField(field, val) {
+    updateSection("site", function (s) { s[field] = val; return s; });
+  }
+
+  function setArrayField(section, idx, field, val) {
+    updateSection(section, function (arr) { arr[idx][field] = val; return arr; });
+  }
+
+  function addToArray(section, item) {
+    updateSection(section, function (arr) { arr.push(clone(item)); return arr; });
+  }
+
+  function removeFromArray(section, idx) {
+    updateSection(section, function (arr) { arr.splice(idx, 1); return arr; });
+  }
+
+  function moveInArray(section, idx, dir) {
+    updateSection(section, function (arr) {
+      var j = idx + dir;
+      if (j < 0 || j >= arr.length) return arr;
+      var tmp = arr[idx]; arr[idx] = arr[j]; arr[j] = tmp;
+      return arr;
+    });
+  }
+
+  /* Row toggle */
+  function toggle(k) { setOpenRows(function (p) { var n = {}; for (var x in p) n[x] = p[x]; n[k] = !p[k]; return n; }); }
+  function rowOpen(k) { return openRows[k] === true; }
+
+  /* Save */
+  async function handleSave() {
+    setSaving(true);
+    var ok = false;
+    try {
+      var r = await window.storage.set(STORAGE_KEY, JSON.stringify(config));
+      ok = r !== null;
+    } catch (e) { ok = false; }
+    setSaving(false);
+    if (ok) { setDirty(false); setStorageOk("saved"); setToast({ m: "Saved! Website loads changes on next visit.", g: true }); }
+    else { setToast({ m: "Save failed. Try again.", g: false }); }
+  }
+
+  /* Export */
+  function handleExport() {
+    var b = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
+    var u = URL.createObjectURL(b); var a = document.createElement("a"); a.href = u; a.download = "jem-site-config.json"; a.click(); URL.revokeObjectURL(u);
+    setToast({ m: "JSON downloaded!", g: true });
+  }
+
+  /* Reset */
+  function handleReset() {
+    setConfig(clone(DEFAULTS)); setDirty(true); setShowReset(false); setOpenRows({});
+    setToast({ m: "Reset done. Click Save to persist.", g: true });
+  }
+
+  /* ═══ UI PIECES ═══ */
+
+  function Fld(p) {
+    var s = { width: "100%", padding: p.area ? "10px 14px" : "9px 14px", borderRadius: 8, border: "1px solid " + bdr, fontSize: 14, fontFamily: p.mono ? "monospace" : "'Outfit',sans-serif", color: txt, background: "#fff", outline: "none", boxSizing: "border-box", resize: p.area ? "vertical" : "none" };
+    return (
+      <div style={{ marginBottom: 14 }}>
+        {p.label && <div style={{ marginBottom: 5, fontSize: 11, fontWeight: 600, color: dim, textTransform: "uppercase", letterSpacing: 0.8 }}>{p.label}</div>}
+        {p.opts ? <select value={p.val || ""} onChange={function (e) { p.set(e.target.value); }} style={s}>{p.opts.map(function (o) { return <option key={o} value={o}>{o}</option>; })}</select>
+          : p.clr ? <div style={{ display: "flex", gap: 8, alignItems: "center" }}><input type="color" value={p.val || "#666"} onChange={function (e) { p.set(e.target.value); }} style={{ width: 40, height: 36, border: "none", borderRadius: 6, cursor: "pointer", padding: 0 }} /><input type="text" value={p.val || ""} onChange={function (e) { p.set(e.target.value); }} style={Object.assign({}, s, { flex: 1, fontFamily: "monospace" })} /></div>
+            : p.area ? <textarea rows={3} value={p.val || ""} onChange={function (e) { p.set(e.target.value); }} style={s} />
+              : <input type="text" value={p.val || ""} onChange={function (e) { p.set(e.target.value); }} style={s} />}
+      </div>
+    );
+  }
+
+  function Abtn(p) {
+    return <button onClick={function (e) { e.stopPropagation(); p.fn(); }} style={{ background: p.d ? "#EA433510" : "#f5f5f2", border: "1px solid " + (p.d ? "#EA433530" : bdr), color: p.d ? "#EA4335" : dim, borderRadius: 6, padding: "4px 10px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>{p.t}</button>;
+  }
+
+  function Crd(p) {
+    return (
+      <div style={{ background: cardBg, borderRadius: 12, border: "1px solid " + bdr, overflow: "hidden" }}>
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid " + bdr, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 16, fontWeight: 700, color: txt }}>{p.title}</span>
+            {p.count != null && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 10, background: gold + "18", color: gold }}>{p.count}</span>}
+          </div>
+          {p.onAdd && <button onClick={p.onAdd} style={{ background: gold + "12", border: "1px solid " + gold + "30", color: gold, padding: "5px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ {p.addL || "Add"}</button>}
         </div>
-      ) : type === "select" ? (
-        <select value={value} onChange={e => onChange(e.target.value)} style={base}>
-          {placeholder && placeholder.split(",").map(o => <option key={o.trim()} value={o.trim()}>{o.trim()}</option>)}
-        </select>
-      ) : (
-        <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={base} />
+        <div style={{ padding: "16px 20px" }}>{p.children}</div>
+      </div>
+    );
+  }
+
+  function Row(p) {
+    var o = rowOpen(p.rk);
+    return (
+      <div style={{ border: "1px solid " + bdr, borderRadius: 10, marginBottom: 10, background: "#FAFAF8", overflow: "hidden" }}>
+        <div onClick={function () { toggle(p.rk); }} style={{ padding: "10px 16px", display: "flex", alignItems: "center", gap: 10, cursor: "pointer", userSelect: "none", borderBottom: o ? "1px solid " + bdr : "none" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", width: 24, textAlign: "center" }}>#{p.i + 1}</span>
+          <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: txt, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</span>
+          <span style={{ fontSize: 14, color: "#9CA3AF", transform: o ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>{"\u25BE"}</span>
+        </div>
+        {o && <div style={{ padding: "14px 16px" }}>{p.children}</div>}
+      </div>
+    );
+  }
+
+  function NList(p) {
+    var items = p.items || [];
+    return (
+      <div style={{ marginTop: 8 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: dim, textTransform: "uppercase" }}>{p.label}</span>
+          <button onClick={function () { p.set(items.concat(["New item"])); }} style={{ background: "none", border: "none", color: gold, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Add</button>
+        </div>
+        {items.map(function (v, j) {
+          return (
+            <div key={j} style={{ display: "flex", gap: 6, marginBottom: 5 }}>
+              <input value={v} onChange={function (e) { var n = items.slice(); n[j] = e.target.value; p.set(n); }} style={{ flex: 1, padding: "7px 12px", borderRadius: 6, border: "1px solid " + bdr, fontSize: 13, outline: "none", color: txt, fontFamily: "'Outfit',sans-serif" }} />
+              <Abtn t={"\u2715"} fn={function () { p.set(items.filter(function (_, k) { return k !== j; })); }} d />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  /* ═══ SECTION RENDERERS ═══ */
+
+  function renderSite() {
+    var d = config.site;
+    return (
+      <Crd title="Site Information">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
+          <Fld label="Event Name" val={d.name} set={function (v) { setSiteField("name", v); }} />
+          <Fld label="Location" val={d.location} set={function (v) { setSiteField("location", v); }} />
+          <Fld label="Date" val={d.date} set={function (v) { setSiteField("date", v); }} />
+          <Fld label="Date (short)" val={d.dateShort} set={function (v) { setSiteField("dateShort", v); }} />
+          <Fld label="Email" val={d.email} set={function (v) { setSiteField("email", v); }} />
+          <Fld label="Phone" val={d.phone} set={function (v) { setSiteField("phone", v); }} />
+          <Fld label="WhatsApp" val={d.whatsapp} set={function (v) { setSiteField("whatsapp", v); }} mono />
+        </div>
+        <Fld label="Tagline" val={d.tagline} set={function (v) { setSiteField("tagline", v); }} />
+        <Fld label="Story" val={d.story} set={function (v) { setSiteField("story", v); }} area />
+      </Crd>
+    );
+  }
+
+  function renderArr(sk, title, lk, fields, defItem, addL) {
+    var arr = config[sk] || [];
+    return (
+      <Crd title={title} count={arr.length} onAdd={function () { addToArray(sk, defItem); }} addL={addL}>
+        {arr.map(function (item, i) {
+          var rk = sk + "-" + i;
+          return (
+            <Row key={rk} i={i} label={item[lk] || "Item " + (i + 1)} rk={rk}>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+                {i > 0 && <Abtn t={"\u2191 Up"} fn={function () { moveInArray(sk, i, -1); }} />}
+                {i < arr.length - 1 && <Abtn t={"\u2193 Down"} fn={function () { moveInArray(sk, i, 1); }} />}
+                <Abtn t={"\u2715 Delete"} fn={function () { removeFromArray(sk, i); }} d />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: fields.length > 3 ? "1fr 1fr" : "1fr", gap: "0 16px" }}>
+                {fields.map(function (f) {
+                  return <Fld key={f.key} label={f.label} val={item[f.key] || ""} mono={f.mono} area={f.area} clr={f.clr} opts={f.opts}
+                    set={function (v) { setArrayField(sk, i, f.key, v); }} />;
+                })}
+              </div>
+            </Row>
+          );
+        })}
+        {arr.length === 0 && <p style={{ color: "#aaa", textAlign: "center", padding: 20, fontSize: 13 }}>No items yet.</p>}
+      </Crd>
+    );
+  }
+
+  function renderSponsorTiers() {
+    var arr = config.sponsorTiers || [];
+    return (
+      <Crd title="Sponsor Tiers" count={arr.length} onAdd={function () { addToArray("sponsorTiers", { tier: "New Tier", price: "$0", perks: ["Perk"] }); }} addL="Add Tier">
+        {arr.map(function (item, i) {
+          var rk = "sp-" + i;
+          return (
+            <Row key={rk} i={i} label={item.tier} rk={rk}>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                <Abtn t={"\u2715 Delete"} fn={function () { removeFromArray("sponsorTiers", i); }} d />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
+                <Fld label="Tier" val={item.tier} set={function (v) { setArrayField("sponsorTiers", i, "tier", v); }} />
+                <Fld label="Price" val={item.price} set={function (v) { setArrayField("sponsorTiers", i, "price", v); }} />
+              </div>
+              <NList label="Perks" items={item.perks} set={function (v) { setArrayField("sponsorTiers", i, "perks", v); }} />
+            </Row>
+          );
+        })}
+      </Crd>
+    );
+  }
+
+  function renderItineraries() {
+    var arr = config.itineraries || [];
+    return (
+      <Crd title="Itineraries" count={arr.length} onAdd={function () { addToArray("itineraries", { title: "New", emoji: "\uD83D\uDCCC", color: "#666", highlights: ["Activity"] }); }} addL="Add Itinerary">
+        {arr.map(function (item, i) {
+          var rk = "it-" + i;
+          return (
+            <Row key={rk} i={i} label={item.emoji + " " + item.title} rk={rk}>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                <Abtn t={"\u2715 Delete"} fn={function () { removeFromArray("itineraries", i); }} d />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
+                <Fld label="Title" val={item.title} set={function (v) { setArrayField("itineraries", i, "title", v); }} />
+                <Fld label="Emoji" val={item.emoji} set={function (v) { setArrayField("itineraries", i, "emoji", v); }} />
+              </div>
+              <Fld label="Color" val={item.color} clr set={function (v) { setArrayField("itineraries", i, "color", v); }} />
+              <NList label="Highlights" items={item.highlights} set={function (h) { setArrayField("itineraries", i, "highlights", h); }} />
+            </Row>
+          );
+        })}
+      </Crd>
+    );
+  }
+
+  function renderRaceWeek() {
+    var arr = config.raceWeekSchedule || [];
+    return (
+      <Crd title="Race Week" count={arr.length} onAdd={function () { addToArray("raceWeekSchedule", { day: "New Day", events: ["Event"] }); }} addL="Add Day">
+        {arr.map(function (item, i) {
+          var rk = "rw-" + i;
+          return (
+            <Row key={rk} i={i} label={item.day} rk={rk}>
+              <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+                <Abtn t={"\u2715 Delete"} fn={function () { removeFromArray("raceWeekSchedule", i); }} d />
+              </div>
+              <Fld label="Day" val={item.day} set={function (v) { setArrayField("raceWeekSchedule", i, "day", v); }} />
+              <NList label="Events" items={item.events} set={function (ev) { setArrayField("raceWeekSchedule", i, "events", ev); }} />
+            </Row>
+          );
+        })}
+      </Crd>
+    );
+  }
+
+  function renderSeo() {
+    var pages = Object.keys(config.seo || {});
+    return (
+      <Crd title="SEO Meta" count={pages.length}>
+        {pages.map(function (pg) {
+          var d = config.seo[pg];
+          return (
+            <div key={pg} style={{ border: "1px solid " + bdr, borderRadius: 10, padding: 16, marginBottom: 10, background: "#FAFAF8" }}>
+              <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 10, background: navy + "15", color: navy, display: "inline-block", marginBottom: 10 }}>{pg}</span>
+              <Fld label="Title" val={d.title} set={function (v) {
+                updateSection("seo", function (s) { s[pg].title = v; return s; });
+              }} />
+              <Fld label="Description" val={d.desc} area set={function (v) {
+                updateSection("seo", function (s) { s[pg].desc = v; return s; });
+              }} />
+            </div>
+          );
+        })}
+      </Crd>
+    );
+  }
+
+  function renderEditor() {
+    switch (tab) {
+      case "site": return renderSite();
+      case "fees": return renderArr("fees", "Race Fees", "category",
+        [{ key: "category", label: "Category" }, { key: "early", label: "Early Bird" }, { key: "regular", label: "Regular" }, { key: "intl", label: "International" }],
+        { category: "New", early: "UGX 0", regular: "UGX 0", intl: "$0" }, "Add Category");
+      case "startTimes": return renderArr("startTimes", "Start Times", "event",
+        [{ key: "event", label: "Event" }, { key: "time", label: "Gun Time" }, { key: "assembly", label: "Assembly" }],
+        { event: "New", time: "00:00 AM", assembly: "00:00 AM" }, "Add Event");
+      case "pillars": return renderArr("pillars", "Explorer Pillars", "title",
+        [{ key: "icon", label: "Icon" }, { key: "title", label: "Title" }, { key: "color", label: "Color", clr: true }, { key: "desc", label: "Description", area: true }],
+        { icon: "\u25CF", title: "New", desc: "", color: "#666" }, "Add Pillar");
+      case "instruments": return renderArr("instruments", "Busoga Instruments", "name",
+        [{ key: "name", label: "Name" }, { key: "emoji", label: "Emoji" }, { key: "id", label: "ID", mono: true }, { key: "tag", label: "Category", opts: ["Protocol", "Hype", "Chill", "Story"] }, { key: "desc", label: "Description", area: true }, { key: "best", label: "Best For" }],
+        { id: "new", name: "New", tag: "Protocol", desc: "", best: "", emoji: "\uD83C\uDFB5" }, "Add Instrument");
+      case "sponsorTiers": return renderSponsorTiers();
+      case "itineraries": return renderItineraries();
+      case "faqs": return renderArr("faqs", "FAQs", "q",
+        [{ key: "q", label: "Question" }, { key: "a", label: "Answer", area: true }],
+        { q: "New question?", a: "Answer." }, "Add FAQ");
+      case "courseMarkers": return renderArr("courseMarkers", "Course Markers", "name",
+        [{ key: "km", label: "KM" }, { key: "name", label: "Name" }, { key: "desc", label: "Description", area: true }],
+        { km: "KM 0", name: "New", desc: "" }, "Add Marker");
+      case "aidStations": return renderArr("aidStations", "Aid Stations", "name",
+        [{ key: "name", label: "Name" }, { key: "location", label: "Location" }, { key: "water", label: "Water" }, { key: "electrolytes", label: "Electrolytes" }, { key: "medical", label: "Medical" }],
+        { name: "Station", location: "KM 0", water: "\u2713", electrolytes: "\u2014", medical: "First Aid" }, "Add Station");
+      case "raceWeekSchedule": return renderRaceWeek();
+      case "seo": return renderSeo();
+      default: return null;
+    }
+  }
+
+  /* ═══ LOADING ═══ */
+  if (loading || !config) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: pageBg, fontFamily: "'Outfit',sans-serif" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: 36, height: 36, borderRadius: "50%", border: "3px solid " + bdr, borderTopColor: gold, animation: "spin 0.8s linear infinite", margin: "0 auto 14px" }} />
+          <p style={{ color: "#aaa", fontSize: 14 }}>Loading...</p>
+          <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`}</style>
+        </div>
+      </div>
+    );
+  }
+
+  var sec = SECTIONS.find(function (s) { return s.id === tab; }) || SECTIONS[0];
+
+  /* ═══ MAIN RENDER ═══ */
+  return (
+    <div style={{ fontFamily: "'Outfit',sans-serif", background: pageBg, minHeight: "100vh" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Outfit',sans-serif;background:${pageBg}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        input:focus,textarea:focus,select:focus{border-color:${gold}!important;box-shadow:0 0 0 3px ${gold}18!important}
+        ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+        @media(max-width:860px){.jem-side{display:none!important}.jem-side.jem-so{display:flex!important;position:fixed!important;z-index:200!important;top:0;left:0;bottom:0}.jem-mb{display:flex!important}}
+        @media(min-width:861px){.jem-mb{display:none!important}}
+      `}</style>
+
+      {sideOpen && <div onClick={function () { setSideOpen(false); }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 190 }} />}
+
+      {showReset && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: 28, maxWidth: 380, width: "90%", boxShadow: "0 16px 48px rgba(0,0,0,0.2)" }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 10 }}>Reset All?</h3>
+            <p style={{ fontSize: 14, color: dim, lineHeight: 1.6, marginBottom: 20 }}>Replaces all content with defaults. Save afterwards to persist.</p>
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+              <button onClick={function () { setShowReset(false); }} style={{ padding: "8px 18px", borderRadius: 8, border: "1px solid " + bdr, background: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>Cancel</button>
+              <button onClick={handleReset} style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "#EA4335", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>Reset</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", minHeight: "100vh" }}>
+
+        {/* SIDEBAR */}
+        <aside className={"jem-side" + (sideOpen ? " jem-so" : "")} style={{ width: 260, background: sidebarBg, display: "flex", flexDirection: "column", borderRight: "1px solid #1E2E44", flexShrink: 0 }}>
+          <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid #1E2E44" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: "linear-gradient(135deg," + gold + ",#B5842F)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "#0D1520" }}>J</div>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>JEM Admin</div>
+                <div style={{ fontSize: 10, color: "#8B9BB5" }}>Content Management</div>
+              </div>
+            </div>
+          </div>
+          <nav style={{ flex: 1, overflowY: "auto", padding: 8 }}>
+            {SECTIONS.map(function (s) {
+              var a = tab === s.id;
+              return (
+                <button key={s.id} onClick={function () { setTab(s.id); setSideOpen(false); }} style={{
+                  display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "9px 12px",
+                  border: "none", borderRadius: 8, cursor: "pointer", textAlign: "left", marginBottom: 2,
+                  background: a ? gold + "18" : "transparent", borderLeft: a ? "3px solid " + gold : "3px solid transparent",
+                }}>
+                  <span style={{ fontSize: 15, width: 22, textAlign: "center" }}>{s.icon}</span>
+                  <span style={{ fontSize: 13, fontWeight: a ? 700 : 500, color: a ? gold : "#E8E4DC" }}>{s.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+          <div style={{ padding: "12px 14px", borderTop: "1px solid #1E2E44", display: "flex", flexDirection: "column", gap: 6 }}>
+            <button onClick={handleExport} style={{ width: "100%", padding: "8px", borderRadius: 8, border: "1px solid #1E2E44", background: "transparent", color: "#E8E4DC", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Export JSON</button>
+            <button onClick={function () { setShowReset(true); }} style={{ width: "100%", padding: "8px", borderRadius: 8, border: "1px solid #EA433530", background: "transparent", color: "#EA4335", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Reset Defaults</button>
+            <div style={{ fontSize: 9, color: "#556", textAlign: "center", marginTop: 2 }}>storage: {storageOk}</div>
+          </div>
+        </aside>
+
+        {/* MAIN */}
+        <main style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+          <header style={{ padding: "12px 24px", background: "#fff", borderBottom: "1px solid " + bdr, display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 50, flexWrap: "wrap", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <button className="jem-mb" onClick={function () { setSideOpen(true); }} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", padding: "2px 6px", display: "none" }}>{"\u2630"}</button>
+              <h1 style={{ fontSize: 17, fontWeight: 700, color: txt, margin: 0 }}>{sec.icon} {sec.label}</h1>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {dirty && <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 10, background: "#FBBC0418", color: "#FBBC04" }}>UNSAVED</span>}
+              <button onClick={handleSave} disabled={saving || !dirty} style={{
+                background: dirty ? "linear-gradient(135deg," + gold + ",#B5842F)" : bdr,
+                color: dirty ? "#0D1520" : "#aaa", border: "none",
+                padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700,
+                cursor: dirty ? "pointer" : "default", opacity: saving ? 0.6 : 1,
+              }}>{saving ? "Saving\u2026" : "Save Changes"}</button>
+            </div>
+          </header>
+          <div style={{ flex: 1, overflowY: "auto", padding: 24 }}>
+            <div style={{ maxWidth: 860, margin: "0 auto" }}>{renderEditor()}</div>
+          </div>
+        </main>
+      </div>
+
+      {toast && (
+        <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 999, background: toast.g ? "#34A853" : "#EA4335", color: "#fff", padding: "12px 22px", borderRadius: 10, fontSize: 14, fontWeight: 600, boxShadow: "0 8px 32px rgba(0,0,0,0.2)", animation: "fadeUp 0.3s ease" }}>
+          {toast.g ? "\u2714" : "\u2718"} {toast.m}
+        </div>
       )}
     </div>
   );
 }
 
-function Badge({ text, color = C.accent }) {
-  return <span style={{ display: "inline-block", padding: "2px 10px", borderRadius: 12, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, background: `${color}18`, color }}>{text}</span>;
-}
 
-function IconBtn({ icon, onClick, danger, title, small }) {
-  return (
-    <button title={title} onClick={onClick} style={{
-      background: danger ? "#EA433515" : "transparent", border: `1px solid ${danger ? "#EA433530" : C.cardBorder}`,
-      color: danger ? C.danger : "#6B7280", borderRadius: 6, cursor: "pointer",
-      width: small ? 28 : 32, height: small ? 28 : 32,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      fontSize: small ? 13 : 15, transition: "all 0.2s",
-    }}>{icon}</button>
-  );
-}
 
-function SectionCard({ children, title, count, onAdd, addLabel }) {
-  return (
-    <div style={{ background: C.card, borderRadius: 12, border: `1px solid ${C.cardBorder}`, overflow: "hidden" }}>
-      <div style={{ padding: "18px 22px", borderBottom: `1px solid ${C.cardBorder}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, color: C.textDark, margin: 0 }}>{title}</h3>
-          {count != null && <Badge text={`${count} items`} />}
-        </div>
-        {onAdd && (
-          <button onClick={onAdd} style={{
-            background: `${C.accent}12`, border: `1px solid ${C.accent}30`, color: C.accent,
-            padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
-            display: "flex", alignItems: "center", gap: 5,
-          }}>+ {addLabel || "Add"}</button>
-        )}
-      </div>
-      <div style={{ padding: "18px 22px" }}>{children}</div>
-    </div>
-  );
-}
+/* ─────────────────────────────────────────────────────────────
+   ROOT ROUTER (GitHub Pages friendly)
+   - Site is default route
+   - Admin panel:   #/admin
+   - Optional:      #/admin?key=YOURKEY (not enforced here)
+   ─────────────────────────────────────────────────────────── */
 
-function ItemRow({ children, index, onDelete, onMoveUp, onMoveDown, label, collapsed, onToggle }) {
-  return (
-    <div style={{
-      border: `1px solid ${C.cardBorder}`, borderRadius: 10, marginBottom: 12,
-      background: "#FAFAF8", overflow: "hidden",
-    }}>
-      <div style={{
-        padding: "10px 16px", display: "flex", alignItems: "center", gap: 10,
-        borderBottom: collapsed ? "none" : `1px solid ${C.cardBorder}`,
-        cursor: onToggle ? "pointer" : "default", userSelect: "none",
-      }} onClick={onToggle}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", width: 22, textAlign: "center" }}>#{index + 1}</span>
-        <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: C.textDark, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
-        <div style={{ display: "flex", gap: 4 }} onClick={e => e.stopPropagation()}>
-          {onMoveUp && <IconBtn icon="↑" onClick={onMoveUp} title="Move up" small />}
-          {onMoveDown && <IconBtn icon="↓" onClick={onMoveDown} title="Move down" small />}
-          {onDelete && <IconBtn icon="✕" onClick={onDelete} danger title="Delete" small />}
-          {onToggle && <span style={{ fontSize: 14, color: "#9CA3AF", transform: collapsed ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>▾</span>}
-        </div>
-      </div>
-      {!collapsed && <div style={{ padding: "14px 16px" }}>{children}</div>}
-    </div>
-  );
-}
+function RootApp() {
+  const [route, setRoute] = React.useState(() => {
+    const h = window.location.hash || "#/";
+    return h.startsWith("#/admin") ? "admin" : "site";
+  });
 
-function Toast({ message, type, onClose }) {
-  useEffect(() => {
-    const t = setTimeout(onClose, 3000);
-    return () => clearTimeout(t);
-  }, [onClose]);
-  const bg = type === "success" ? C.success : type === "error" ? C.danger : C.warn;
-  return (
-    <div style={{
-      position: "fixed", bottom: 24, right: 24, zIndex: 999,
-      background: bg, color: C.white, padding: "12px 22px", borderRadius: 10,
-      fontSize: 14, fontWeight: 600, boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
-      display: "flex", alignItems: "center", gap: 10, animation: "fadeInUp 0.3s ease",
-    }}>
-      <span>{type === "success" ? "✓" : type === "error" ? "✕" : "⚠"}</span>
-      {message}
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════
-   SECTION EDITORS
-   ═══════════════════════════════════════ */
-
-function SiteEditor({ data, update }) {
-  const s = (key) => (val) => update({ ...data, [key]: val });
-  return (
-    <SectionCard title="Site Information">
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 18px" }}>
-        <Input label="Event Name" value={data.name} onChange={s("name")} />
-        <Input label="Location" value={data.location} onChange={s("location")} />
-        <Input label="Date (display)" value={data.date} onChange={s("date")} />
-        <Input label="Date (short)" value={data.dateShort} onChange={s("dateShort")} />
-        <Input label="Email" value={data.email} onChange={s("email")} type="email" />
-        <Input label="Phone" value={data.phone} onChange={s("phone")} />
-        <Input label="WhatsApp (no spaces)" value={data.whatsapp} onChange={s("whatsapp")} mono />
-      </div>
-      <Input label="Tagline" value={data.tagline} onChange={s("tagline")} />
-      <Input label="One-sentence Story" value={data.story} onChange={s("story")} type="textarea" rows={2} />
-    </SectionCard>
-  );
-}
-
-function ArrayEditor({ data, update, fields, title, addLabel, defaultItem, labelField }) {
-  const [collapsed, setCollapsed] = useState({});
-  const toggle = (i) => setCollapsed(p => ({ ...p, [i]: !p[i] }));
-  const setField = (i, key, val) => { const n = [...data]; n[i] = { ...n[i], [key]: val }; update(n); };
-  const remove = (i) => update(data.filter((_, j) => j !== i));
-  const add = () => { update([...data, { ...defaultItem }]); setCollapsed(p => ({ ...p, [data.length]: false })); };
-  const move = (i, dir) => {
-    const n = [...data]; const j = i + dir;
-    if (j < 0 || j >= n.length) return;
-    [n[i], n[j]] = [n[j], n[i]]; update(n);
-  };
-  return (
-    <SectionCard title={title} count={data.length} onAdd={add} addLabel={addLabel}>
-      {data.map((item, i) => (
-        <ItemRow key={i} index={i} label={item[labelField] || `Item ${i + 1}`}
-          onDelete={() => remove(i)}
-          onMoveUp={i > 0 ? () => move(i, -1) : null}
-          onMoveDown={i < data.length - 1 ? () => move(i, 1) : null}
-          collapsed={collapsed[i] !== false && i < data.length - 1 && Object.keys(collapsed).length === 0 ? true : collapsed[i]}
-          onToggle={() => toggle(i)}
-        >
-          <div style={{ display: "grid", gridTemplateColumns: fields.length > 3 ? "1fr 1fr" : "1fr", gap: "0 16px" }}>
-            {fields.map(f => (
-              <Input key={f.key} label={f.label} value={item[f.key] || ""} onChange={v => setField(i, f.key, v)}
-                type={f.type || "text"} placeholder={f.placeholder} mono={f.mono} rows={f.rows} />
-            ))}
-          </div>
-        </ItemRow>
-      ))}
-      {data.length === 0 && <p style={{ fontSize: 13, color: "#9CA3AF", textAlign: "center", padding: 20 }}>No items yet. Click + to add one.</p>}
-    </SectionCard>
-  );
-}
-
-/* Sponsor tiers have a nested perks array */
-function SponsorTiersEditor({ data, update }) {
-  const [collapsed, setCollapsed] = useState({});
-  const toggle = (i) => setCollapsed(p => ({ ...p, [i]: !p[i] }));
-  const setField = (i, key, val) => { const n = [...data]; n[i] = { ...n[i], [key]: val }; update(n); };
-  const setPerk = (i, j, val) => { const n = [...data]; const perks = [...n[i].perks]; perks[j] = val; n[i] = { ...n[i], perks }; update(n); };
-  const addPerk = (i) => { const n = [...data]; n[i] = { ...n[i], perks: [...n[i].perks, "New perk"] }; update(n); };
-  const removePerk = (i, j) => { const n = [...data]; n[i] = { ...n[i], perks: n[i].perks.filter((_, k) => k !== j) }; update(n); };
-  const remove = (i) => update(data.filter((_, j) => j !== i));
-  const add = () => update([...data, { tier: "New Tier", price: "$0", perks: ["Perk 1"] }]);
-  return (
-    <SectionCard title="Sponsor Tiers" count={data.length} onAdd={add} addLabel="Add Tier">
-      {data.map((item, i) => (
-        <ItemRow key={i} index={i} label={item.tier} onDelete={() => remove(i)}
-          collapsed={collapsed[i] == null ? true : collapsed[i]} onToggle={() => toggle(i)}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
-            <Input label="Tier Name" value={item.tier} onChange={v => setField(i, "tier", v)} />
-            <Input label="Price" value={item.price} onChange={v => setField(i, "price", v)} />
-          </div>
-          <div style={{ marginTop: 6 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8 }}>Perks</label>
-              <button onClick={() => addPerk(i)} style={{ background: "none", border: "none", color: C.accent, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Add perk</button>
-            </div>
-            {item.perks.map((pk, j) => (
-              <div key={j} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-                <input value={pk} onChange={e => setPerk(i, j, e.target.value)} style={{
-                  flex: 1, padding: "7px 12px", borderRadius: 6, border: `1px solid ${C.cardBorder}`,
-                  fontSize: 13, outline: "none", color: C.textDark,
-                }} />
-                <IconBtn icon="✕" onClick={() => removePerk(i, j)} danger small />
-              </div>
-            ))}
-          </div>
-        </ItemRow>
-      ))}
-    </SectionCard>
-  );
-}
-
-/* Itineraries have a nested highlights array */
-function ItinerariesEditor({ data, update }) {
-  const [collapsed, setCollapsed] = useState({});
-  const toggle = (i) => setCollapsed(p => ({ ...p, [i]: !p[i] }));
-  const setField = (i, key, val) => { const n = [...data]; n[i] = { ...n[i], [key]: val }; update(n); };
-  const setHighlight = (i, j, val) => { const n = [...data]; const h = [...n[i].highlights]; h[j] = val; n[i] = { ...n[i], highlights: h }; update(n); };
-  const addHighlight = (i) => { const n = [...data]; n[i] = { ...n[i], highlights: [...n[i].highlights, "New activity"] }; update(n); };
-  const removeHighlight = (i, j) => { const n = [...data]; n[i] = { ...n[i], highlights: n[i].highlights.filter((_, k) => k !== j) }; update(n); };
-  const remove = (i) => update(data.filter((_, j) => j !== i));
-  const add = () => update([...data, { title: "New Itinerary", emoji: "📌", color: "#666", highlights: ["Activity 1"] }]);
-  return (
-    <SectionCard title="Tourism Itineraries" count={data.length} onAdd={add} addLabel="Add Itinerary">
-      {data.map((item, i) => (
-        <ItemRow key={i} index={i} label={`${item.emoji} ${item.title}`} onDelete={() => remove(i)}
-          collapsed={collapsed[i] == null ? true : collapsed[i]} onToggle={() => toggle(i)}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
-            <Input label="Title" value={item.title} onChange={v => setField(i, "title", v)} />
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 8px" }}>
-              <Input label="Emoji" value={item.emoji} onChange={v => setField(i, "emoji", v)} />
-              <Input label="Color" value={item.color} onChange={v => setField(i, "color", v)} type="color" />
-            </div>
-          </div>
-          <div style={{ marginTop: 6 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8 }}>Highlights</label>
-              <button onClick={() => addHighlight(i)} style={{ background: "none", border: "none", color: C.accent, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Add</button>
-            </div>
-            {item.highlights.map((h, j) => (
-              <div key={j} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-                <input value={h} onChange={e => setHighlight(i, j, e.target.value)} style={{
-                  flex: 1, padding: "7px 12px", borderRadius: 6, border: `1px solid ${C.cardBorder}`,
-                  fontSize: 13, outline: "none", color: C.textDark,
-                }} />
-                <IconBtn icon="✕" onClick={() => removeHighlight(i, j)} danger small />
-              </div>
-            ))}
-          </div>
-        </ItemRow>
-      ))}
-    </SectionCard>
-  );
-}
-
-/* Race week schedule — nested events array */
-function RaceWeekEditor({ data, update }) {
-  const [collapsed, setCollapsed] = useState({});
-  const toggle = (i) => setCollapsed(p => ({ ...p, [i]: !p[i] }));
-  const setDay = (i, val) => { const n = [...data]; n[i] = { ...n[i], day: val }; update(n); };
-  const setEvent = (i, j, val) => { const n = [...data]; const ev = [...n[i].events]; ev[j] = val; n[i] = { ...n[i], events: ev }; update(n); };
-  const addEvent = (i) => { const n = [...data]; n[i] = { ...n[i], events: [...n[i].events, "New event"] }; update(n); };
-  const removeEvent = (i, j) => { const n = [...data]; n[i] = { ...n[i], events: n[i].events.filter((_, k) => k !== j) }; update(n); };
-  const remove = (i) => update(data.filter((_, j) => j !== i));
-  const add = () => update([...data, { day: "New Day", events: ["Event 1"] }]);
-  return (
-    <SectionCard title="Race Week Schedule" count={data.length} onAdd={add} addLabel="Add Day">
-      {data.map((item, i) => (
-        <ItemRow key={i} index={i} label={item.day} onDelete={() => remove(i)}
-          collapsed={collapsed[i] == null ? true : collapsed[i]} onToggle={() => toggle(i)}>
-          <Input label="Day Label" value={item.day} onChange={v => setDay(i, v)} />
-          <div style={{ marginTop: 4 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <label style={{ fontSize: 11, fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: 0.8 }}>Events</label>
-              <button onClick={() => addEvent(i)} style={{ background: "none", border: "none", color: C.accent, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>+ Add event</button>
-            </div>
-            {item.events.map((ev, j) => (
-              <div key={j} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-                <input value={ev} onChange={e => setEvent(i, j, e.target.value)} style={{
-                  flex: 1, padding: "7px 12px", borderRadius: 6, border: `1px solid ${C.cardBorder}`,
-                  fontSize: 13, outline: "none", color: C.textDark,
-                }} />
-                <IconBtn icon="✕" onClick={() => removeEvent(i, j)} danger small />
-              </div>
-            ))}
-          </div>
-        </ItemRow>
-      ))}
-    </SectionCard>
-  );
-}
-
-/* SEO editor — keyed by page path */
-function SeoEditor({ data, update }) {
-  const pages = Object.keys(data);
-  const setField = (page, key, val) => update({ ...data, [page]: { ...data[page], [key]: val } });
-  return (
-    <SectionCard title="SEO Meta Tags" count={pages.length}>
-      {pages.map((page, i) => (
-        <div key={page} style={{ border: `1px solid ${C.cardBorder}`, borderRadius: 10, padding: 16, marginBottom: 12, background: "#FAFAF8" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <Badge text={page} color={C.primaryLight} />
-          </div>
-          <Input label="Meta Title" value={data[page].title} onChange={v => setField(page, "title", v)} />
-          <Input label="Meta Description" value={data[page].desc} onChange={v => setField(page, "desc", v)} type="textarea" rows={2} />
-        </div>
-      ))}
-    </SectionCard>
-  );
-}
-
-/* ═══════════════════════════════════════
-   MAIN APP
-   ═══════════════════════════════════════ */
-function JemAdminPanel() {
-  const [config, setConfig] = useState(null);
-  const [activeSection, setActiveSection] = useState("site");
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState(null);
-  const [dirty, setDirty] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [search, setSearch] = useState("");
-
-  /* Load on mount */
-  useEffect(() => {
-    (async () => {
-      const saved = await loadConfig();
-      setConfig(saved || JSON.parse(JSON.stringify(DEFAULTS)));
-      setLoading(false);
-    })();
+  React.useEffect(() => {
+    const onHash = () => {
+      const h = window.location.hash || "#/";
+      setRoute(h.startsWith("#/admin") ? "admin" : "site");
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  const showToast = (message, type = "success") => setToast({ message, type });
-
-  const updateSection = useCallback((section) => (value) => {
-    setConfig(prev => ({ ...prev, [section]: value }));
-    setDirty(true);
-  }, []);
-
-  const handleSave = async () => {
-    setSaving(true);
-    const ok = await saveConfig(config);
-    setSaving(false);
-    if (ok) {
-      setDirty(false);
-      showToast("All changes saved successfully");
-    } else {
-      showToast("Failed to save. Please try again.", "error");
-    }
-  };
-
-  const handleExportJSON = () => {
-    const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "jem-site-config.json";
-    a.click(); URL.revokeObjectURL(url);
-    showToast("Config exported as JSON");
-  };
-
-  const handleReset = () => {
-    if (confirm("Reset ALL content to defaults? This cannot be undone.")) {
-      setConfig(JSON.parse(JSON.stringify(DEFAULTS)));
-      setDirty(true);
-      showToast("Reset to defaults. Save to persist.", "warn");
-    }
-  };
-
-  const filteredSections = search
-    ? SECTIONS.filter(s => s.label.toLowerCase().includes(search.toLowerCase()) || s.desc.toLowerCase().includes(search.toLowerCase()))
-    : SECTIONS;
-
-  if (loading) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: C.bg, fontFamily: "'Outfit', sans-serif" }}>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ width: 36, height: 36, borderRadius: "50%", border: `3px solid ${C.cardBorder}`, borderTopColor: C.accent, animation: "spin 0.8s linear infinite", margin: "0 auto 14px" }} />
-        <p style={{ color: "#9CA3AF", fontSize: 14 }}>Loading admin panel...</p>
+  // Soft "back way": no visible nav link. Type #/admin in the URL.
+  if (route === "admin") {
+    return (
+      <div>
+        <JemAdmin />
+        <div style={{position:"fixed", right:14, bottom:14, zIndex:9999}}>
+          <button
+            onClick={() => (window.location.hash = "#/")}
+            style={{
+              padding:"10px 12px",
+              borderRadius:999,
+              border:"1px solid rgba(255,255,255,.22)",
+              background:"rgba(15,23,42,.72)",
+              color:"#fff",
+              backdropFilter:"blur(10px)",
+              cursor:"pointer"
+            }}
+            title="Back to website"
+          >
+            ← Back
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
-  const renderEditor = () => {
-    if (!config) return null;
-    switch (activeSection) {
-      case "site": return <SiteEditor data={config.site} update={updateSection("site")} />;
-      case "fees": return <ArrayEditor data={config.fees} update={updateSection("fees")} title="Race Fees" addLabel="Add Category" labelField="category"
-        defaultItem={{ category: "New Category", early: "UGX 0", regular: "UGX 0", intl: "$0" }}
-        fields={[
-          { key: "category", label: "Category" },
-          { key: "early", label: "Early Bird Price" },
-          { key: "regular", label: "Regular Price" },
-          { key: "intl", label: "International Price" },
-        ]} />;
-      case "startTimes": return <ArrayEditor data={config.startTimes} update={updateSection("startTimes")} title="Start Times" addLabel="Add Event" labelField="event"
-        defaultItem={{ event: "New Event", time: "00:00 AM", assembly: "00:00 AM" }}
-        fields={[
-          { key: "event", label: "Event Name" },
-          { key: "time", label: "Gun Time" },
-          { key: "assembly", label: "Assembly Time" },
-        ]} />;
-      case "pillars": return <ArrayEditor data={config.pillars} update={updateSection("pillars")} title="Explorer Pillars" addLabel="Add Pillar" labelField="title"
-        defaultItem={{ icon: "●", title: "New Pillar", desc: "Description", color: "#666" }}
-        fields={[
-          { key: "icon", label: "Icon Character" },
-          { key: "title", label: "Title" },
-          { key: "color", label: "Color", type: "color" },
-          { key: "desc", label: "Description", rows: 2 },
-        ]} />;
-      case "instruments": return <ArrayEditor data={config.instruments} update={updateSection("instruments")} title="Busoga Instruments" addLabel="Add Instrument" labelField="name"
-        defaultItem={{ id: "new", name: "New Instrument", tag: "Protocol", desc: "Description", best: "Best used for...", emoji: "🎵" }}
-        fields={[
-          { key: "name", label: "Name" },
-          { key: "emoji", label: "Emoji" },
-          { key: "id", label: "ID (slug)", mono: true },
-          { key: "tag", label: "Category", type: "select", placeholder: "Protocol,Hype,Chill,Story" },
-          { key: "desc", label: "Description", rows: 2 },
-          { key: "best", label: "Best Used For" },
-        ]} />;
-      case "sponsorTiers": return <SponsorTiersEditor data={config.sponsorTiers} update={updateSection("sponsorTiers")} />;
-      case "itineraries": return <ItinerariesEditor data={config.itineraries} update={updateSection("itineraries")} />;
-      case "faqs": return <ArrayEditor data={config.faqs} update={updateSection("faqs")} title="FAQs" addLabel="Add FAQ" labelField="q"
-        defaultItem={{ q: "New question?", a: "Answer here." }}
-        fields={[
-          { key: "q", label: "Question" },
-          { key: "a", label: "Answer", rows: 3 },
-        ]} />;
-      case "courseMarkers": return <ArrayEditor data={config.courseMarkers} update={updateSection("courseMarkers")} title="Course Markers" addLabel="Add Marker" labelField="name"
-        defaultItem={{ km: "KM 0", name: "New Marker", desc: "Description" }}
-        fields={[
-          { key: "km", label: "KM Label" },
-          { key: "name", label: "Marker Name" },
-          { key: "desc", label: "Description", rows: 2 },
-        ]} />;
-      case "aidStations": return <ArrayEditor data={config.aidStations} update={updateSection("aidStations")} title="Aid Stations" addLabel="Add Station" labelField="name"
-        defaultItem={{ name: "Station", location: "KM 0", water: "✓", electrolytes: "—", medical: "First Aid" }}
-        fields={[
-          { key: "name", label: "Station Name" },
-          { key: "location", label: "Location" },
-          { key: "water", label: "Water (✓/—)" },
-          { key: "electrolytes", label: "Electrolytes (✓/—)" },
-          { key: "medical", label: "Medical Level" },
-        ]} />;
-      case "raceWeekSchedule": return <RaceWeekEditor data={config.raceWeekSchedule} update={updateSection("raceWeekSchedule")} />;
-      case "seo": return <SeoEditor data={config.seo} update={updateSection("seo")} />;
-      default: return null;
-    }
-  };
-
-  return (
-    <>
-      
-
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && <div className="adm-sidebar-overlay" onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 199 }} />}
-
-      <div className="adm-layout" style={{ display: "grid", gridTemplateColumns: "270px 1fr", minHeight: "100vh" }}>
-
-        {/* ── SIDEBAR ── */}
-        <aside className={`adm-sidebar ${sidebarOpen ? "open" : ""}`} style={{
-          background: C.sidebar, display: "flex", flexDirection: "column",
-          borderRight: `1px solid ${C.border}`, overflow: "hidden",
-        }}>
-          {/* Logo block */}
-          <div style={{ padding: "22px 20px 16px", borderBottom: `1px solid ${C.border}` }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${C.accent}, ${C.accentHover})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: C.bgDark }}>J</div>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: C.white, letterSpacing: 0.3 }}>JEM Admin</div>
-                <div style={{ fontSize: 10, color: C.textDim, letterSpacing: 0.5 }}>Content Management</div>
-              </div>
-            </div>
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search sections..." style={{
-              width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`,
-              background: "rgba(255,255,255,0.05)", color: C.text, fontSize: 12, outline: "none",
-            }} />
-          </div>
-
-          {/* Nav items */}
-          <nav style={{ flex: 1, overflowY: "auto", padding: "10px 10px" }}>
-            {filteredSections.map(s => (
-              <button key={s.id} className="adm-sidebar-item" onClick={() => { setActiveSection(s.id); setSidebarOpen(false); }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "10px 12px",
-                  border: "none", borderRadius: 8, cursor: "pointer", textAlign: "left",
-                  background: activeSection === s.id ? `${C.accent}18` : "transparent",
-                  borderLeft: activeSection === s.id ? `3px solid ${C.accent}` : "3px solid transparent",
-                }}>
-                <span style={{ fontSize: 16, width: 24, textAlign: "center", flexShrink: 0 }}>{s.icon}</span>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: activeSection === s.id ? 700 : 500, color: activeSection === s.id ? C.accent : C.text }}>{s.label}</div>
-                  <div style={{ fontSize: 10, color: C.textDim, marginTop: 1 }}>{s.desc}</div>
-                </div>
-              </button>
-            ))}
-          </nav>
-
-          {/* Bottom actions */}
-          <div style={{ padding: "12px 14px", borderTop: `1px solid ${C.border}`, display: "flex", flexDirection: "column", gap: 6 }}>
-            <button onClick={handleExportJSON} style={{ width: "100%", padding: "9px", borderRadius: 8, border: `1px solid ${C.border}`, background: "transparent", color: C.text, fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-              📥 Export JSON
-            </button>
-            <button onClick={handleReset} style={{ width: "100%", padding: "9px", borderRadius: 8, border: `1px solid ${C.danger}30`, background: "transparent", color: C.danger, fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-              ↻ Reset to Defaults
-            </button>
-          </div>
-        </aside>
-
-        {/* ── MAIN CONTENT ── */}
-        <main style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
-
-          {/* Top bar */}
-          <header style={{
-            padding: "14px 28px", background: C.white, borderBottom: `1px solid ${C.cardBorder}`,
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            position: "sticky", top: 0, zIndex: 50,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <button className="adm-mobile-menu" onClick={() => setSidebarOpen(true)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", padding: "4px 8px", display: "none" }}>☰</button>
-              <div>
-                <h1 style={{ fontSize: 18, fontWeight: 700, color: C.textDark, margin: 0 }}>
-                  {SECTIONS.find(s => s.id === activeSection)?.icon} {SECTIONS.find(s => s.id === activeSection)?.label}
-                </h1>
-                <p style={{ fontSize: 12, color: "#9CA3AF", margin: 0 }}>{SECTIONS.find(s => s.id === activeSection)?.desc}</p>
-              </div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {dirty && <Badge text="Unsaved changes" color={C.warn} />}
-              <button onClick={handleSave} disabled={saving || !dirty} style={{
-                background: dirty ? `linear-gradient(135deg, ${C.accent}, ${C.accentHover})` : C.cardBorder,
-                color: dirty ? C.bgDark : "#9CA3AF", border: "none",
-                padding: "9px 22px", borderRadius: 8, fontSize: 13, fontWeight: 700,
-                cursor: dirty ? "pointer" : "default", opacity: saving ? 0.6 : 1,
-                display: "flex", alignItems: "center", gap: 6,
-              }}>
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
-            </div>
-          </header>
-
-          {/* Editor area */}
-          <div style={{ flex: 1, overflowY: "auto", padding: "28px" }}>
-            <div style={{ maxWidth: 880, margin: "0 auto" }}>
-              {renderEditor()}
-            </div>
-          </div>
-        </main>
-      </div>
-
-      {/* Toast */}
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-    </>
-  );
+  return <SiteApp />;
 }
 
-/* ===== Router + bootstrap ===== */
-function getRoute() {
-  const h = (window.location.hash || "").replace(/^#\/?/, "");
-  return h || "";
-}
 
-function RootRouter() {
-  const [route, setRoute] = useState(getRoute());
-
-  useEffect(() => {
-    const onHashChange = () => setRoute(getRoute());
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
-
-  // Simple, explicit routing:
-  //  - "#/admin" => admin panel
-  //  - anything else => main site
-  return route === "admin" ? <JemAdminPanel /> : <AppMain />;
-}
-
-const rootEl = document.getElementById("root");
-if (!rootEl) {
-  throw new Error('Missing <div id="root"></div> in index.html');
-}
-ReactDOM.createRoot(rootEl).render(<RootRouter />);
+// Mount
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<RootApp />);
