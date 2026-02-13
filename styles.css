@@ -56,14 +56,9 @@ button:hover { opacity: 0.92; }
   color: var(--p-accent);
 }
 
-.logo-img {
-  width: 540px;
-  height: 540px;
-  object-fit: cover;
-}
 
 .site-logo {
-  height: 60px;          /* Desktop size */
+  height: 340px;          /* Desktop size */
   width: auto;           /* Maintain aspect ratio */
   border-radius: 50%;    /* Circular */
   object-fit: contain;
