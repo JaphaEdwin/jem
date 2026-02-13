@@ -209,7 +209,7 @@ function Header({ currentPage, onNavigate }) {
       backdropFilter: "blur(12px)", borderBottom: scrolled ? "1px solid rgba(200,150,62,0.15)" : "1px solid transparent",
       transition: "all 0.3s",
     }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "var(--header-h)" }}>
         <button onClick={() => onNavigate("/")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, padding: 0 }}>
          <img 
   src={LOGO_SRC} 
@@ -267,7 +267,7 @@ function Footer({ onNavigate }) {
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <div className="jem-footer-grid">
           <div>
-            <img src={LOGO_SRC} alt="Jinja Explorer Marathon" style={{ height: 52, width: "auto", objectFit: "contain", marginBottom: 8 }} />
+            <img src={LOGO_SRC} alt="Jinja Explorer Marathon" className="footer-logo" />
             <p style={{ fontSize: 14, lineHeight: 1.7, opacity: 0.55, maxWidth: 260 }}>{SITE.tagline}</p>
           </div>
           <div>
