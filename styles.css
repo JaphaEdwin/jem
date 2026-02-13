@@ -57,7 +57,7 @@ button:hover { opacity: 0.92; }
 }
 
 .logo-img {
-  width: 120px;
+  width: auto;
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
