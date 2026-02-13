@@ -56,6 +56,14 @@ button:hover { opacity: 0.92; }
   color: var(--p-accent);
 }
 
+.logo-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
 .jem-desktop-nav { display: flex; gap: 2px; align-items: center; }
 .jem-mobile-toggle { display: none; }
 .jem-mobile-register { display: none; }
