@@ -211,7 +211,12 @@ function Header({ currentPage, onNavigate }) {
     }}>
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
         <button onClick={() => onNavigate("/")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, padding: 0 }}>
-          <img src={LOGO_SRC} alt="Jinja Explorer Marathon" style={{ height: 42, width: "auto", objectFit: "contain" }} />
+          <img 
+  src={LOGO_SRC} 
+  alt="Logo"
+  className="logo-img"
+/>
+
           <span className="jem-header-name" style={{ fontFamily: "var(--ff-body)", fontSize: 11, color: "rgba(255,255,255,0.45)", letterSpacing: 2.5, textTransform: "uppercase" }}>Jinja Explorer Marathon</span>
         </button>
         <nav style={{ display: "flex", alignItems: "center", gap: 4 }}>
