@@ -25,6 +25,41 @@ const {
 /* ─── STORAGE KEY — shared with admin panel ─── */
 const CMS_STORAGE_KEY = "jem-cms-config";
 
+/* ─── localStorage-backed async storage shim (GitHub Pages) ───
+   The original admin panel expects window.storage.get/set/remove.
+   On static hosting there is no backend, so we persist edits to localStorage.
+---------------------------------------------------------------- */
+if (!window.storage) {
+  window.storage = {
+    async get(key) {
+      try {
+        const v = window.localStorage.getItem(key);
+        if (v === null || v === undefined) return null;
+        return { value: v };
+      } catch (e) {
+        return null;
+      }
+    },
+    async set(key, value) {
+      try {
+        window.localStorage.setItem(key, String(value));
+        return { ok: true };
+      } catch (e) {
+        return null;
+      }
+    },
+    async remove(key) {
+      try {
+        window.localStorage.removeItem(key);
+        return { ok: true };
+      } catch (e) {
+        return null;
+      }
+    },
+  };
+}
+
+
 /* ─── EDITABLE CONFIG (defaults — overwritten by admin on load) ─── */
 let SITE = {
   name: "Jinja Explorer Marathon",
