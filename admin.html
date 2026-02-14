@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jinja Explorer Marathon — Run the Royal Gateway — Admin</title>
+  <style>
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#fff;line-height:1.5}
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .head{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px 16px;background:rgba(255,255,255,.05)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;text-decoration:none;cursor:pointer}
+    .btn.primary{border-color:rgba(0,255,199,.35);background:linear-gradient(135deg, rgba(0,255,199,.18), rgba(123,97,255,.18))}
+    .btn.ghost{background:transparent}
+    .panel{margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px;background:rgba(255,255,255,.05)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    label{font-size:12px;opacity:.8}
+    input,textarea{border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;padding:10px 12px;outline:none}
+    .span2{grid-column:1/-1}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    @media (max-width:860px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <div>
+        <div style="font-weight:900">Jinja Explorer Marathon — Run the Royal Gateway Admin</div>
+        <div style="font-size:12px;opacity:.7;margin-top:4px">Edits save to localStorage and show on the main site</div>
+      </div>
+      <a class="btn" href="index.html">← Back to Website</a>
+    </header>
+
+    <main class="panel">
+      <div class="grid">
+        <div class="field"><label>Brand name</label><input id="brandName"></div>
+        <div class="field"><label>Tagline</label><input id="tagline"></div>
+        <div class="field span2"><label>Hero title</label><input id="heroTitle"></div>
+        <div class="field span2"><label>Hero subtitle</label><textarea id="heroSubtitle" rows="3"></textarea></div>
+        <div class="field"><label>About title</label><input id="aboutTitle"></div>
+        <div class="field span2"><label>About body</label><textarea id="aboutBody" rows="4"></textarea></div>
+        <div class="field"><label>Services title</label><input id="servicesTitle"></div>
+        <div class="field span2"><label>Services (simple)</label><textarea id="servicesJson" rows="6" placeholder='[{"title":"Web Apps","body":"..."}]'></textarea></div>
+        <div class="field"><label>Contact title</label><input id="contactTitle"></div>
+        <div class="field span2"><label>Contact body</label><textarea id="contactBody" rows="3"></textarea></div>
+        <div class="field"><label>CTA button text</label><input id="ctaText"></div>
+        <div class="field"><label>Footer creator</label><input id="footerCreator"></div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+        <button class="btn primary" id="saveBtn" type="button">Save</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const CONTENT_KEY = "websiteContent_v1";
+    const defaultContent = {"brandName": "Jinja Explorer Marathon — Run the Royal Gateway", "tagline": "Innovation-driven solutions for modern businesses.", "heroTitle": "Build smarter. Move faster.", "heroSubtitle": "Customize this website from the admin dashboard (saved to localStorage).", "aboutTitle": "About", "aboutBody": "Align Tech helps teams build modern digital products with clarity, speed, and quality.", "servicesTitle": "What we do", "services": [{"title": "Web Apps", "body": "Fast, responsive websites and web apps."}, {"title": "Automation", "body": "Streamline workflows and reduce manual work."}, {"title": "Analytics", "body": "Measure what matters with clear dashboards."}], "contactTitle": "Contact", "contactBody": "Reach out and let’s build something impactful together.", "ctaText": "Open Admin Dashboard", "footerCreator": "Developed by Iyundhu Edwin Japheth"};
+    const $ = (id) => document.getElementById(id);
+
+    function safeParse(raw, fallback) { try { return JSON.parse(raw); } catch { return fallback; } }
+    function getContent() { const raw = localStorage.getItem(CONTENT_KEY); return raw ? {...defaultContent, ...safeParse(raw, {})} : {...defaultContent}; }
+    function setContent(c) { localStorage.setItem(CONTENT_KEY, JSON.stringify(c)); }
+
+    function load() {
+      const c = getContent();
+      $('brandName').value = c.brandName||'';
+      $('tagline').value = c.tagline||'';
+      $('heroTitle').value = c.heroTitle||'';
+      $('heroSubtitle').value = c.heroSubtitle||'';
+      $('aboutTitle').value = c.aboutTitle||'';
+      $('aboutBody').value = c.aboutBody||'';
+      $('servicesTitle').value = c.servicesTitle||'';
+      $('servicesJson').value = JSON.stringify(c.services||[], null, 2);
+      $('contactTitle').value = c.contactTitle||'';
+      $('contactBody').value = c.contactBody||'';
+      $('ctaText').value = c.ctaText||'';
+      $('footerCreator').value = c.footerCreator||'';
+    }
+
+    function collect() {
+      const services = safeParse($('servicesJson').value, defaultContent.services);
+      return {
+        brandName: $('brandName').value.trim(),
+        tagline: $('tagline').value.trim(),
+        heroTitle: $('heroTitle').value.trim(),
+        heroSubtitle: $('heroSubtitle').value.trim(),
+        aboutTitle: $('aboutTitle').value.trim(),
+        aboutBody: $('aboutBody').value.trim(),
+        servicesTitle: $('servicesTitle').value.trim(),
+        services,
+        contactTitle: $('contactTitle').value.trim(),
+        contactBody: $('contactBody').value.trim(),
+        ctaText: $('ctaText').value.trim(),
+        footerCreator: $('footerCreator').value.trim(),
+      };
+    }
+
+    $('saveBtn').addEventListener('click', () => { setContent(collect()); alert('Saved! Open index.html to see updates.'); });
+    $('resetBtn').addEventListener('click', () => {
+      if (!confirm('Reset website content to defaults?')) return;
+      setContent(defaultContent); load(); alert('Reset complete.');
+    });
+
+    load();
+  </script>
+</body>
+</html>

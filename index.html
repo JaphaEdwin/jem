@@ -3,29 +3,77 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Jinja Explorer Marathon</title>
-
-  <!-- Fonts used by the original JSX -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome (some icons in the UI) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
+  <title>Jinja Explorer Marathon — Run the Royal Gateway</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="root"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class='brand-mark' aria-hidden='true'></div>
+      <div class="brand-text">
+        <div id="brandName" class="brand-name">Jinja Explorer Marathon — Run the Royal Gateway</div>
+        <div id="tagline" class="brand-tagline">Innovation-driven solutions for modern businesses.</div>
+      </div>
+    </div>
 
-  <!-- React 18 (UMD) -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+      <a class="btn" href="admin.html" rel="nofollow">Admin</a>
+    </nav>
+  </header>
 
-  <!-- Babel (so GitHub Pages can run JSX without a build step) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <h1 id="heroTitle">Build smarter. Move faster.</h1>
+        <p id="heroSubtitle" class="lead">Customize this website from the admin dashboard (saved to localStorage).</p>
+        <div class="hero-actions">
+          <a class="btn primary" id="ctaBtn" href="admin.html">Open Admin Dashboard</a>
+          <button class="btn ghost" id="resetContentBtn" type="button">Reset</button>
+        </div>
+        <p class="hint">Edit content in <strong>admin.html</strong>. It saves to <strong>localStorage</strong> and shows here.</p>
+      </div>
+    </section>
 
-  <!-- Your merged app -->
-  <script type="text/babel" src="app.js" data-presets="react"></script>
+    <section id="about" class="section">
+      <div class="container">
+        <h2 id="aboutTitle">About</h2>
+        <p id="aboutBody">Align Tech helps teams build modern digital products with clarity, speed, and quality.</p>
+      </div>
+    </section>
+
+    <section id="services" class="section alt">
+      <div class="container">
+        <h2 id="servicesTitle">What we do</h2>
+        <div id="servicesGrid" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container">
+        <h2 id="contactTitle">Contact</h2>
+        <p id="contactBody">Reach out and let’s build something impactful together.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="small" id="footerCreator">Developed by Iyundhu Edwin Japheth</div>
+      <a class="small subtle" href="admin.html">Admin</a>
+    </div>
+  </footer>
+
+  <script>
+    // Ctrl + Alt + A shortcut to admin
+    window.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+        window.location.href = 'admin.html';
+      }
+    });
+  </script>
+  <script src="script.js"></script>
 </body>
 </html>
